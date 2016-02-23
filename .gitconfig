@@ -1,0 +1,37 @@
+[alias]
+	lura = log --graph --all --format='%C(auto)%h [%Cblue%an %Creset⧗ %Cgreen%ar%C(reset)%C(auto)] → %s%d' --color
+	lur = log --graph --format='%C(auto)%h [%Cblue%an %Creset⧗ %Cgreen%ar%C(reset)%C(auto)] → %s%d' --color
+	lol= 'log' '--oneline' '--graph' '--decorate'
+  lg1 = log --graph --all --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(bold white)— %an%C(reset)%C(bold yellow)%d%C(reset)' --abbrev-commit --date=relative
+  lg2 = log --graph --all --format=format:'%C(bold blue)%h%C(reset) - %C(bold cyan)%aD%C(reset) %C(bold green)(%ar)%C(reset)%C(bold yellow)%d%C(reset)%n''          %C(white)%s%C(reset) %C(bold white)— %an%C(reset)' --abbrev-commit
+  l1 = log --oneline
+  lg = log --pretty=format:'%Cred%h%Creset - %Cgreen(%cr)%Creset%C(yellow)%d%Creset %s %C(bold blue)<%an>%Creset' --abbrev-commit --graph
+  lg-me = !git lg --author=\"$GIT_AUTHOR_NAME\"
+  today-all = !git lg --all --since='12am'
+  lg-day = "!f() { git lg-me --all --after=\"${1-(date \"+%Y-%m-%d\")} 00:00\" --before=\"${1-(date \"+%Y-%m-%d\")} 23:59\"; }; f"
+  log-grep = "!f() { git log --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' ${1-HEAD..HEAD} | grep ${2-\"Merge pull\"}; }; f"
+  unstage = reset HEAD
+  use-remote = "!f() { git reset --soft origin/$(git rev-parse --abbrev-ref HEAD); }; f"
+  use-remote-hard = "!f() { git reset --hard origin/$(git rev-parse --abbrev-ref HEAD); }; f"
+  set-upstream = "!f() { git branch --set-upstream-to=origin/$(git rev-parse --abbrev-ref HEAD) $(git rev-parse --abbrev-ref HEAD); }; f"
+  last = log -1 HEAD
+  tail = "!f() { git l1 --reverse | tail -${1}; }; f"
+  squash = "!f(){ git reset --soft HEAD~${1} && git commit --edit -m\"$(git log --format=%B --reverse HEAD..HEAD@{1})\"; };f"
+  repo = "!f() { basename `git rev-parse --show-toplevel`; }; f"
+  rb = "!f() { git rebase ${1} --strategy recursive -X theirs; }; f"
+  ignore = update-index --skip-worktree
+  unignore = update-index --no-skip-worktree
+  ignored = ls-files -v . | grep ^S
+  cleanup = "!git branch --merged | grep  -v '\\*\\|master\\|develop' | xargs -n 1 git branch -d"
+[push]
+	default = simple
+[credential]
+	helper = osxkeychain
+[filter "lfs"]
+	clean = git-lfs clean %f
+	smudge = git-lfs smudge %f
+	required = true
+[core]
+	editor = /usr/bin/vim
+[init]
+	templatedir = ~/.git-templates
